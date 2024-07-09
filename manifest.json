@@ -3,6 +3,7 @@
     "short_name": "TecOnMe",
     "start_url": "index.html",
     "display": "fullscreen",
+    "id": "index.html",
     "icons": [
         {
             "src": "icons/favicon-16x16.png",
