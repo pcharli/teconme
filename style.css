@@ -1,0 +1,15 @@
+@import "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+
+#map { 
+    height: 90vh;
+    border: 1px solid black;
+    transition: all 2s;
+ }
+
+#map.hidde {
+    opacity: 0;
+    border: none;
+ }
+.hidden {
+    display: none;
+}
