@@ -38,7 +38,21 @@
           "label": "Tec on Me !"
         },
         {
+            "src": "icons/screenshot2.png",
+             "sizes": "640x482",
+             "type": "image/png",
+             "form_factor": "wide",
+             "label": "Tec on Me !"
+           },
+        {
             "src": "icons/screenshot-mobile.png",
+             "sizes": "320x241",
+             "type": "image/png",
+             "form_factor": "narrow",
+             "label": "Tec on Me !"
+        },
+        {
+            "src": "icons/screenshot-mobile2.png",
              "sizes": "320x241",
              "type": "image/png",
              "form_factor": "narrow",
