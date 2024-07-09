@@ -46,14 +46,14 @@
            },
         {
             "src": "icons/screenshot-mobile.png",
-             "sizes": "320x241",
+             "sizes": "320x320",
              "type": "image/png",
              "form_factor": "narrow",
              "label": "Tec on Me !"
         },
         {
             "src": "icons/screenshot-mobile2.png",
-             "sizes": "320x241",
+             "sizes": "320x320",
              "type": "image/png",
              "form_factor": "narrow",
              "label": "Tec on Me !"
