@@ -35,6 +35,14 @@
           "type": "image/png",
           "form_factor": "wide",
           "label": "Tec on Me !"
+        },
+        {
+            "src": "icons/screenshot-mobile.png",
+             "sizes": "320x241",
+             "type": "image/png",
+             "form_factor": "wide",
+             "label": "Tec on Me !"
         }
-    ]
+    ],
+    "description": "Trouves les arrêts de bus autour de toi et les lignes de bus qui y passent."
 }
