@@ -41,7 +41,7 @@
             "src": "icons/screenshot-mobile.png",
              "sizes": "320x241",
              "type": "image/png",
-             "form_factor": "wide",
+             "form_factor": "narrow",
              "label": "Tec on Me !"
         }
     ],
