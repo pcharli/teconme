@@ -1,16 +1,34 @@
 class Geo {
     constructor($mapBox, $geoSwitch) {
+        //récup des éléments HTML
         this.$geoSwitch = $geoSwitch
         this.$mapBox = $mapBox
+        //Mémorisera la carte
         this.map = false
+        //Est-on géolocalisé ?
         this.geo = false
+        //Rayon pour chercher les bus stops (en km)
         this.distance = 1
+        //Option de géolocalisation
         this.optionsMap = {
+            //Activation du GPS précis
             enableHighAccuracy: true,
+            //5 secondes pour y arriver, sinon erreur
             timeout: 5000,
+            //On ne met pas la position en cache
             maximumAge: 0
             }
+        this.myIcon = L.icon({
+            iconUrl: './icons/stop.png',
+            iconSize: [80, 80],
+            iconAnchor: [26, 35],
+            popupAnchor: [15, -28],
+            shadowUrl: '',
+            shadowSize: [80, 80],
+            shadowAnchor: [22, 94]
+        })
     }
+    //Méthode d'initialisation
     init = () => {
         navigator.permissions.query({name:'geolocation'})
         .then(result => {
@@ -56,17 +74,16 @@ class Geo {
 
      //recherche des arrêts TEC
      loadStops = (position) => {
+        //requête sur l'API des Tec
         fetch(`https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/poteaux-tec/records?where=within_distance(geo_point_2d%2C%20geom%27POINT(${position.coords.longitude}%20${position.coords.latitude})%27%2C%20${this.distance}km)&limit=20&lang=fr`)
             .then(resp => resp.json())
             .then(resp => {
                 let stopsList = resp.results
                 if(stopsList.length > 0) {
                     stopsList.forEach(el => {
-                        L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011]).addTo(this.map)
+                        L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011], {icon:this.myIcon}).addTo(this.map)
                         .bindPopup(`<a href="#" class="marker-link" data-id="${el.pot_id}">${el.pot_nom_ha}</a><br><p>Lat : ${el.geo_point_2d.lat}<p>Long: ${el.geo_point_2d.lon}<p>Id : ${el.pot_id}`)
                     })
-                   /* L.marker([50.47135086699622, 4.468554854393006]).addTo(map)
-                        .bindPopup(`<a href="#" class="marker-link">PARC</a>`)*/
                 } else {
                     alert("Pas d'arrêt dans le coin !")
                 }
