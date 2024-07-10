@@ -19,7 +19,7 @@ class Geo {
             maximumAge: 0
             }
         this.myIcon = L.icon({
-            iconUrl: './icons/stop.png',
+            iconUrl: './icons/stop.svg',
             iconSize: [80, 80],
             iconAnchor: [26, 35],
             popupAnchor: [15, -28],
