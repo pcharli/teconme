@@ -4,6 +4,7 @@ class Geo {
         this.$mapBox = $mapBox
         this.map = false
         this.geo = false
+        this.distance = 1
         this.optionsMap = {
             enableHighAccuracy: true,
             timeout: 5000,
@@ -50,9 +51,28 @@ class Geo {
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Cepegra - 2024' //Auteur de la carte
         }).addTo(this.map)
+        this.loadStops(position)
      }// end createMap
 
- 
+     //recherche des arrêts TEC
+     loadStops = (position) => {
+        fetch(`https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/poteaux-tec/records?where=within_distance(geo_point_2d%2C%20geom%27POINT(${position.coords.longitude}%20${position.coords.latitude})%27%2C%20${this.distance}km)&limit=20&lang=fr`)
+            .then(resp => resp.json())
+            .then(resp => {
+                let stopsList = resp.results
+                if(stopsList.length > 0) {
+                    stopsList.forEach(el => {
+                        L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011]).addTo(this.map)
+                        .bindPopup(`<a href="#" class="marker-link" data-id="${el.pot_id}">${el.pot_nom_ha}</a><br><p>Lat : ${el.geo_point_2d.lat}<p>Long: ${el.geo_point_2d.lon}<p>Id : ${el.pot_id}`)
+                    })
+                   /* L.marker([50.47135086699622, 4.468554854393006]).addTo(map)
+                        .bindPopup(`<a href="#" class="marker-link">PARC</a>`)*/
+                } else {
+                    alert("Pas d'arrêt dans le coin !")
+                }
+             })
+             .catch(err => alert(err.message))
+     }
 
 // Méthode d"clenchée si erreur de géolocalisation
     errorPosition = (err) => {
