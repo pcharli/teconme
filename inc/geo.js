@@ -1,6 +1,6 @@
 class Geo {
     constructor($mapBox, $geoSwitch) {
-        this.context = 'local' // distant | local
+        this.context = 'distant' // distant | local
         //url api
         this.urlApi = (this.context != 'distant') ? 'http://localhost/api_bootcamp' : 'https://cepegra-frontend.xyz/bootcamp'
         //récup des éléments HTML
