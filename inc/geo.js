@@ -128,8 +128,13 @@ class Geo {
                             fetch(this.urlApi+'/bus/'+el.pot_id)
                             .then((response) => response.json())
                             .then((data) => {
+                                
                                 //console.log(data.content)
                                 let template = ''
+                            if(data.code == "pas ok") {
+                                marker.bindPopup(`<h4 data-id="${el.pot_id}">${el.pot_nom_ha}</h4><p class="error">Pas de bus renseigné</p>`).openPopup()
+                            } else {
+
                                 data.content.forEach(item => {
                                     if (item.route_id != null) {
                                         template += `<a href="#" class="marker-link" data-id="${item['route_id']}" data-shape="${item['shape_id']}">${item['route_short_name']} - ${item['route_long_name']}}</a><br>`
@@ -183,10 +188,12 @@ class Geo {
                                             }
                                         })
                                     })
+                                
                                 })
-                                    
                                 //end click links
+                            }
                             })
+                        
                             .catch((error) => console.error(error))
                             
                         })
