@@ -105,7 +105,7 @@ class Geo {
         var imageUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
         var imageUrl2 = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
         var imageUrl3 = "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
-        L.tileLayer(imageUrl3, {
+        L.tileLayer(imageUrl, {
             attribution: 'Cepegra - 2024' //Auteur de la carte
         }).addTo(this.map)
         this.loadStops(position)
