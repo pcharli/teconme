@@ -1,10 +1,17 @@
 class Geo {
     constructor($mapBox, $geoSwitch) {
+        this.context = 'local' // distant | local
+        //url api
+        this.urlApi = (this.context != 'distant') ? 'http://localhost/api_bootcamp' : 'https://cepegra-frontend.xyz/bootcamp'
         //récup des éléments HTML
         this.$geoSwitch = $geoSwitch
         this.$mapBox = $mapBox
         //Mémorisera la carte
         this.map = false
+        //???
+        this.mapElms = {polyLineRef: null}
+        // tous les markers
+        this.markers = []
         //Est-on géolocalisé ?
         this.geo = false
         //Rayon pour chercher les bus stops (en km)
@@ -19,10 +26,37 @@ class Geo {
             maximumAge: 0
             }
         this.myIcon = L.icon({
-            iconUrl: './icons/stop.svg',
-            iconSize: [80, 80],
-            iconAnchor: [26, 35],
-            popupAnchor: [15, -28],
+            iconUrl: './icons/icon-stop.svg',
+            iconSize: [53, 53],
+            iconAnchor: [16, 55],
+            popupAnchor: [10, -37],
+            shadowUrl: '',
+            shadowSize: [80, 80],
+            shadowAnchor: [22, 94]
+        })
+        this.startIcon = L.icon({
+            iconUrl: './icons/icon-start.svg',
+            iconSize: [53, 53],
+            iconAnchor: [16, 55],
+            popupAnchor: [10, -37],
+            shadowUrl: '',
+            shadowSize: [80, 80],
+            shadowAnchor: [22, 94]
+        })
+        this.endIcon = L.icon({
+            iconUrl: './icons/icon-end.svg',
+            iconSize: [53, 53],
+            iconAnchor: [16, 55],
+            popupAnchor: [10, -37],
+            shadowUrl: '',
+            shadowSize: [80, 80],
+            shadowAnchor: [22, 94]
+        })
+        this.currentIcon = L.icon({
+            iconUrl: './icons/icon-me.svg',
+            iconSize: [53, 53],
+            iconAnchor: [16, 55],
+            popupAnchor: [10, -37],
             shadowUrl: '',
             shadowSize: [80, 80],
             shadowAnchor: [22, 94]
@@ -30,6 +64,7 @@ class Geo {
     }
     //Méthode d'initialisation
     init = () => {
+      
         navigator.permissions.query({name:'geolocation'})
         .then(result => {
             console.log(result.state)
@@ -65,8 +100,12 @@ class Geo {
         //return
         // ajouter la carte dans la div#map centrée sur les coordonnées reçues dans "position"
         this.map = L.map(this.$mapBox).setView([position.coords.latitude, position.coords.longitude], 17)
+        L.marker([position.coords.latitude, position.coords.longitude], {icon:this.currentIcon}).addTo(this.map)
         // Choisir le layer standard (on peut avoir le satelite ou autre)
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        var imageUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        var imageUrl2 = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        var imageUrl3 = "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
+        L.tileLayer(imageUrl3, {
             attribution: 'Cepegra - 2024' //Auteur de la carte
         }).addTo(this.map)
         this.loadStops(position)
@@ -81,8 +120,77 @@ class Geo {
                 let stopsList = resp.results
                 if(stopsList.length > 0) {
                     stopsList.forEach(el => {
-                        L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011], {icon:this.myIcon}).addTo(this.map)
-                        .bindPopup(`<a href="#" class="marker-link" data-id="${el.pot_id}">${el.pot_nom_ha}</a><br><p>Lat : ${el.geo_point_2d.lat}<p>Long: ${el.geo_point_2d.lon}<p>Id : ${el.pot_id}`)
+                        let marker = L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011], {icon:this.myIcon}).addTo(this.map)
+                        .on('click', (map) => {
+                            const myMap = map
+                            
+                            //alert('click')
+                            fetch(this.urlApi+'/bus/'+el.pot_id)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                //console.log(data.content)
+                                let template = ''
+                                data.content.forEach(item => {
+                                    if (item.route_id != null) {
+                                        template += `<a href="#" class="marker-link" data-id="${item['route_id']}" data-shape="${item['shape_id']}">${item['route_short_name']} - ${item['route_long_name']}}</a><br>`
+                                    }
+                                })
+                                marker.bindPopup(`<h4 data-id="${el.pot_id}">${el.pot_nom_ha}</h4>`+template).openPopup()
+
+                                //console.log(template)
+                                //click on a link
+                                let markersLinks = document.getElementsByClassName('marker-link')
+                                markersLinks = [ ...markersLinks]
+                                //console.log(markersLinks[0])
+                            
+                                Array.prototype.forEach.call(markersLinks, (marker) => {
+                                    //console.log(marker)
+                                    marker.addEventListener('click', e => {
+                                        e.preventDefault()
+                                        const id_shape = e.target.dataset.shape
+                                        console.log(e.target.dataset.shape)
+                                        fetch(this.urlApi+'/shapes/'+id_shape)
+                                        .then(res => res.json())
+                                        .then(res => {
+                                            //console.log(res)
+                                           
+                                            let data = res.content
+                                            const dataPositions = data.map(el => [el.shape_pt_lat, el.shape_pt_lon])
+                                            let dataLenght = data.length
+                                            if(res.content.length > 0) {
+                                                if(this.mapElms.polyLineRef){
+                                                    this.mapElms.polyLineRef.removeFrom(this.map)
+                                                    this.markers.forEach(marker => {
+                                                       this.map.removeLayer(marker)
+                                                    })
+                                                    }
+                                                let marker = L.marker([data[0].shape_pt_lat,data[0].shape_pt_lon], {icon:this.startIcon}).addTo(this.map)
+                                                .bindPopup('Départ')
+                                                //console.log(data[dataLenght-1])
+                                                this.markers.push(marker)
+                                                marker = L.marker([data[dataLenght-1].shape_pt_lat,data[dataLenght-1].shape_pt_lon], {icon:this.endIcon}).addTo(this.map)
+                                                .bindPopup('Arrivée')
+                                                this.markers.push(marker)
+                                                let latMedium = (parseFloat(data[0].shape_pt_lat) + parseFloat(data[dataLenght-1].shape_pt_lat))/2
+                                                let longMedium = (parseFloat(data[0].shape_pt_lon) + parseFloat(data[dataLenght-1].shape_pt_lon))/2
+                                                //console.log('latitudeMedium', latMedium)
+                                             
+                                                this.map.flyTo([latMedium,longMedium],11)
+                                                this.mapElms.polyLineRef = L.polyline(dataPositions,{color: 'red', weight: 13}
+                                                ).addTo(this.map)
+
+
+                                            }
+                                        })
+                                    })
+                                })
+                                    
+                                //end click links
+                            })
+                            .catch((error) => console.error(error))
+                            
+                        })
+                        
                     })
                 } else {
                     alert("Pas d'arrêt dans le coin !")
@@ -91,7 +199,7 @@ class Geo {
              .catch(err => alert(err.message))
      }
 
-// Méthode d"clenchée si erreur de géolocalisation
+// Méthode déclenchée si erreur de géolocalisation
     errorPosition = (err) => {
         console.warn('ERROR(' + err.code + '): ' + err.message);
     } //end errorPosition

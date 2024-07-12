@@ -3,6 +3,7 @@
     "short_name": "TecOnMe",
     "start_url": "index.html",
     "display": "fullscreen",
+    "display_override": ["fullscreen", "minimal-ui"],
     "id": "index.html",
     "icons": [
         {
