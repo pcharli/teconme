@@ -31,3 +31,17 @@
 .error {
     color: red;
 }
+.box {
+    border: 1px solid black;
+    padding: 1rem;
+    position: absolute;
+    width: 25%;
+    min-height: 5rem;
+    z-index: 1000;
+    background-color: #CDCDCD;
+    margin: 30% 0 0 30%;
+}
+.close {
+    width: 1rem;
+    cursor: pointer;
+}

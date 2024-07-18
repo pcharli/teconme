@@ -1,6 +1,7 @@
 import {Geo} from './inc/geo.js'
 //Gestion du bouton d'installation
 import {Install} from './inc/install.js'
+import boxClose from './inc/box.js'
 Install()
 // end install
 
@@ -17,3 +18,7 @@ myGeo.init()
         // On déclenche la méthode geoLoc
         myGeo.geoLoc()
     })
+
+    boxClose()
+
+    console.log(boxes)
