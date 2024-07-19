@@ -1,7 +1,7 @@
 class Geo {
     constructor($mapBox, $geoSwitch) {
         //url api
-         this.urlApi = (window.location.href  != 'https://teconme.netlify.app/') ? 'http://localhost/api_bootcamp' : 'https://cepegra-frontend.xyz/bootcamp'
+         this.urlApi = (window.location.href  != 'https://teconme.netlify.app/carte.html') ? 'http://localhost/api_bootcamp' : 'https://cepegra-frontend.xyz/bootcamp'
         //récup des éléments HTML
         this.$geoSwitch = $geoSwitch
         this.$mapBox = $mapBox
