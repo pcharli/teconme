@@ -11,35 +11,32 @@
             <meta name="apple-mobile-web-app-status-bar-style" content="#B12A34">
             <link rel="stylesheet" href="style.css">
             <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-            <script defer type="module" src="main.js"></script>
+            <script defer type="module" src="home.js"></script>
             <link rel="stylesheet" href="style.css">
         </head>
         <body>
-            <header>
-                <h1>Tec On Me</h1>
-            </header>
-            <main>
-                <div class="nav">
-                    <a href="" class="nav-item">GDPR</a>
-                    <a href="" class="nav-item">À propos</a>
-                    <button class="geo-btn">Me géolocaliser</button>
-                </div>
-                
-                <div class="box box-install">
-                    <img src="icons/xmark-solid.svg" alt="close" class="close">
-                    <p>Simplifie-toi la vie et <strong>Installe l'app !</strong></p>
-                    <button class="install-btn hidden">Install</button>
-                </div>
-                <div class="box box-alert hidden2">
-                    <img src="icons/xmark-solid.svg" alt="close" class="close">
-                    <img src="" alt="">
-                    <p class="alert-message"><strong>Pas d'arrêt autour de vous</strong>
-                    Déplacez-vous  !!</p>
-                </div>
-               <div id="map" class="hidde2"></div>
+                    <main>
+                <div class="wrapper">
+                    <form action="" class="gps gps_form">
+                    <img class="big" src="https://assets.codepen.io/87353/icon-bus-front-big.svg" alt="">
+                    <h1><strong>Choisir </strong><span>mon expérience :</span></h1>
+                    <div class="gps_form__field">
+                      <input type="radio" name="localisation" id="gps-on" value="y">
+                      <label for="gps-on">Activer la géolocalisation</label>
+                      <p><span>Et trouver les arrêts </span><span>proche de ma position.</span></p>
+                      <img src="https://assets.codepen.io/87353/geo-gps-on.svg" alt="gps actif">
+                    </div>
+                    
+                    <div class="gps_form__field">
+                      <input type="radio" name="localisation" id="gps-off" value="n">
+                      <label for="gps-off"><span>Utiliser l'adresse</span><span> par défaut</span></label>
+                      <p>L'adresse par défaut est utilisée pour me situer.</p>
+                      <img src="https://assets.codepen.io/87353/geo-gps-off.svg" alt="gps actif">
+                    </div>
+                    <button type="submit">Continuer</button>
+                  </form>
+                  </div>
             </main>
-            <footer>
-                &copy; Cepegra - 2024
-            </footer>
+   
         </body>
     </html>

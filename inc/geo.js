@@ -88,6 +88,11 @@ class Geo {
     } // end init
 
     createMap = (position) => {
+        let url = new URL(window.location.href)
+        //console.log(url.pathname)
+        if(url.pathname != "/carte.html") {
+            window.location.href = "carte.html"
+        }
         //si la carte paar défaut est affichée, la supprimer
         if (this.map) {
             this.map.remove()
@@ -222,9 +227,11 @@ class Geo {
                    
                     navigator.geolocation.getCurrentPosition(this.createMap, this.errorPosition, this.optionsMaps)
                     // Si la demande est acceptée
+                    
                 } else if (result.state === 'prompt') {
                     
                     navigator.geolocation.getCurrentPosition(this.createMap, this.errorPosition, this.optionsMap)
+                    
                  } 
                  else if(result.state === 'denied'){
                     // si il refuse

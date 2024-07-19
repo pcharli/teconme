@@ -20,5 +20,3 @@ myGeo.init()
     })
 
     boxClose()
-
-    console.log(boxes)
