@@ -25,7 +25,7 @@ class Geo {
             maximumAge: 0
             }
         this.myIcon = L.icon({
-            iconUrl: './icons/icon-stop.svg',
+            iconUrl: './icons/icon-map-bus-stop.svg',
             iconSize: [53, 53],
             iconAnchor: [16, 55],
             popupAnchor: [10, -37],
@@ -34,7 +34,7 @@ class Geo {
             shadowAnchor: [22, 94]
         })
         this.startIcon = L.icon({
-            iconUrl: './icons/icon-start.svg',
+            iconUrl: './icons/icon-map-bus-start.svg',
             iconSize: [53, 53],
             iconAnchor: [16, 55],
             popupAnchor: [10, -37],
@@ -43,7 +43,7 @@ class Geo {
             shadowAnchor: [22, 94]
         })
         this.endIcon = L.icon({
-            iconUrl: './icons/icon-end.svg',
+            iconUrl: './icons/icon-map-bus-end.svg',
             iconSize: [53, 53],
             iconAnchor: [16, 55],
             popupAnchor: [10, -37],
@@ -52,7 +52,7 @@ class Geo {
             shadowAnchor: [22, 94]
         })
         this.currentIcon = L.icon({
-            iconUrl: './icons/icon-me.svg',
+            iconUrl: './icons/icon-map-user-location.svg',
             iconSize: [53, 53],
             iconAnchor: [16, 55],
             popupAnchor: [10, -37],
