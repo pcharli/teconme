@@ -32,16 +32,35 @@
     color: red;
 }
 .box {
-    border: 1px solid black;
+    border: none;
     padding: 1rem;
     position: absolute;
     width: 25%;
     min-height: 5rem;
     z-index: 1000;
-    background-color: #CDCDCD;
-    margin: 30% 0 0 30%;
+    background-color: white;
+    margin: 10% 0 0 30%;
+    border-radius: 16px;
+    box-shadow: 0px 14px 49px 0px #8B8CB269;
+    box-shadow: -6px -7px 23px 0px #F804043B;
+    box-shadow: 9px 4px 35px 0px #FFD60099;
+    backdrop-filter: blur(8px)
+
 }
 .close {
     width: 1rem;
     cursor: pointer;
+}
+.box-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.install-btn {
+    background-color: #FFD600;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 16px;
+    margin-top: 1rem;
 }
