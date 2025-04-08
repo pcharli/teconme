@@ -13,6 +13,11 @@
 .hidden {
     display: none;
 }
+// ???
+
+.leaflet-top {
+    bottom: 0 !important;
+}
 .leaflet-control-zoom, .leaflet-touch .leaflet-bar {
     border: none;
 }
