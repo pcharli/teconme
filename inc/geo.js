@@ -1,15 +1,16 @@
+//object général de la géolocalisation
 class Geo {
     constructor($mapBox, $geoSwitch) {
-        //url api
+        //url api si dev ou prod
          this.urlApi = (window.location.href  != 'https://teconme.netlify.app/carte.html') ? 'http://localhost/api_bootcamp' : 'https://cepegra-frontend.xyz/bootcamp'
         //récup des éléments HTML
         this.$geoSwitch = $geoSwitch
         this.$mapBox = $mapBox
         //Mémorisera la carte
         this.map = false
-        //???
+        //setting les lines sur la carte
         this.mapElms = {polyLineRef: null}
-        // tous les markers
+        // receptacle pour tous les markers
         this.markers = []
         //Est-on géolocalisé ?
         this.geo = false
@@ -24,6 +25,7 @@ class Geo {
             //On ne met pas la position en cache
             maximumAge: 0
             }
+        // définition des icônes à utliser pour les markers
         this.myIcon = L.icon({
             iconUrl: './icons/icon-map-bus-stop.svg',
             iconSize: [53, 53],
@@ -61,39 +63,47 @@ class Geo {
             shadowAnchor: [22, 94]
         })
     }
-    //Méthode d'initialisation
+    //Méthode d'initialisation de la géolocalisation
     init = () => {
-      
+      //demande de l'autorisation
         navigator.permissions.query({name:'geolocation'})
         .then(result => {
             console.log(result.state)
+            // si on a les droits
             if (result.state === 'granted') {
                 //Ajout d'une class sur le bouton "Me géolocaliser" si les droits sont OK
                 //this.$geoSwitch.classList.add('hidden')
+                // on change le switch
                 this.geo = true
-                //createMap()
                 
+                // géolocaliser l'user et déclencher createMap si position reçue / errorPosition sinon
                 navigator.geolocation.getCurrentPosition(this.createMap, this.errorPosition, this.optionsMap)
             }
+            //si pas les droits
             else {
                 console.log('pas autorisé')
+                //création d' un objet
                 let position = {
                     coords: {}
                 }
+                //valeurs en dur
+                // stops dispos
                 position.coords.latitude = 50.05597490916252
                 position.coords.longitude = 4.491863482729571
-                /* null */
+                /* stops non dispos */
                 position.coords.latitude = 50.112673
                 position.coords.longitude = 4.418669
-                /* end null */
+               // création de la carte
                 this.createMap(position)
             }
         })
     } // end init
 
+    //création de la carte autour de la position
     createMap = (position) => {
+        //tes de l'url
         let url = new URL(window.location.href)
-        //console.log(url.pathname)
+        //rediriger vers carte.html si besoin
         if(url.pathname != "/carte.html") {
             window.location.href = "carte.html"
         }
@@ -101,95 +111,130 @@ class Geo {
         if (this.map) {
             this.map.remove()
         }
-    
-        //console.log("createMap",position)
         // Afficher la div id="carte"
         this.$mapBox.classList.remove('hidde')
-        //return
+       
         // ajouter la carte dans la div#map centrée sur les coordonnées reçues dans "position"
         this.map = L.map(this.$mapBox).setView([position.coords.latitude, position.coords.longitude], 17)
         L.marker([position.coords.latitude, position.coords.longitude], {icon:this.currentIcon}).addTo(this.map)
-        // Choisir le layer standard (on peut avoir le satelite ou autre)
+
+        // Choisir le layer désiré (on peut avoir le satelite ou autre)
+        //carte vue satelite
         var imageUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        // carte standard
         var imageUrl2 = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        // carte source Belge
         var imageBel = "https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png"
+        // carte avec lignes des bus
         var imageUrl3 = "https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=f5a6d9a8d3484637b41037978e6e1e7b"
+        // ajout de la carte choisie
         L.tileLayer(imageUrl3, {
             attribution: 'Cepegra - 2025' //Auteur de la carte
         }).addTo(this.map)
+
+        //Appel de la fonction de recherche des arrêts de bus
         this.loadStops(position)
      }// end createMap
 
      //recherche des arrêts TEC
      loadStops = (position) => {
-        //requête sur l'API des Tec
+        //requête sur l'API des Tec en passant les coordonnées et la distance
         fetch(`https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/poteaux-tec/records?where=within_distance(geo_point_2d%2C%20geom%27POINT(${position.coords.longitude}%20${position.coords.latitude})%27%2C%20${this.distance}km)&limit=20&lang=fr`)
             .then(resp => resp.json())
             .then(resp => {
+                // recup des arrêts
                 let stopsList = resp.results
+                //si y a des arrêts
                 if(stopsList.length > 0) {
+                    //pour chaque arrêt
                     stopsList.forEach(el => {
+                        //ajout d'un marker + icone
                         let marker = L.marker([el.geo_point_2d.lat-0.000617, el.geo_point_2d.lon+0.0011], {icon:this.myIcon}).addTo(this.map)
+                        // si on clique sur l'arrêt
                         .on('click', (map) => {
                             const myMap = map
                             
-                            //alert('click')
+                            //appel de notre api en passant l'ID pour récupérer les bus y passant
                             fetch(this.urlApi+'/bus/'+el.pot_id)
                             .then((response) => response.json())
                             .then((data) => {
                                 
-                                //console.log(data.content)
-                                let template = ''
+                            //définition d'un modèle vide
+                            let template = ''
+                            // si pas de bus
                             if(data.code == "pas ok") {
+                                // contenu de pop-up
                                 marker.bindPopup(`<h4 data-id="${el.pot_id}">${el.pot_nom_ha}</h4><p class="error">Pas de bus renseigné</p>`).openPopup()
-                            } else {
-
+                            } 
+                            // si il y a des bus
+                            else {
+                                // pour chaque bus
                                 data.content.forEach(item => {
+                                    // si on a une route pour le bus
                                     if (item.route_id != null) {
+                                        //on ajoute un lien avec une classe marker-link pour ce bus dans le template
                                         template += `<a href="#" class="marker-link" data-id="${item['route_id']}" data-shape="${item['shape_id']}">${item['route_short_name']} - ${item['route_long_name']}}</a><br>`
                                     }
                                 })
+                                //on insère le template dans le pop-up
                                 marker.bindPopup(`<h4 data-id="${el.pot_id}">${el.pot_nom_ha}</h4>`+template).openPopup()
 
                                 //console.log(template)
-                                //click on a link
+                                //Sélection de tous les liens des pop-up
                                 let markersLinks = document.getElementsByClassName('marker-link')
+                                // on en fait un Array
                                 markersLinks = [ ...markersLinks]
                                 //console.log(markersLinks[0])
-                            
+                                // pour chaque liens, on récupère le marker
                                 Array.prototype.forEach.call(markersLinks, (marker) => {
                                     //console.log(marker)
+                                    // quand on clique sur le marker
                                     marker.addEventListener('click', e => {
                                         e.preventDefault()
+                                        // recup de l'ID du trajet
                                         const id_shape = e.target.dataset.shape
                                         console.log(e.target.dataset.shape)
+                                        // appel à notre api pour récupérer tous les points du trajet
                                         fetch(this.urlApi+'/shapes/'+id_shape)
                                         .then(res => res.json())
                                         .then(res => {
                                             //console.log(res)
                                            
                                             let data = res.content
+                                            // récupération des points
                                             const dataPositions = data.map(el => [el.shape_pt_lat, el.shape_pt_lon])
                                             let dataLenght = data.length
+                                            // si il y a des points
                                             if(res.content.length > 0) {
+                                                // si un trajet est déjà affiché
                                                 if(this.mapElms.polyLineRef){
+                                                    //on élminie tous ses points
                                                     this.mapElms.polyLineRef.removeFrom(this.map)
+                                                    // on élimine tous les markers marker par marker
                                                     this.markers.forEach(marker => {
                                                        this.map.removeLayer(marker)
                                                     })
                                                     }
+                                                //on ajoute la premier marker avec l'icone start + texte Départ dans pop-up
                                                 let marker = L.marker([data[0].shape_pt_lat,data[0].shape_pt_lon], {icon:this.startIcon}).addTo(this.map)
                                                 .bindPopup('Départ')
-                                                //console.log(data[dataLenght-1])
+                                                //pousse le marker dans l'array
                                                 this.markers.push(marker)
+                                                //ajout du dernier marker avec l'icone end + texte Arrivée
                                                 marker = L.marker([data[dataLenght-1].shape_pt_lat,data[dataLenght-1].shape_pt_lon], {icon:this.endIcon}).addTo(this.map)
                                                 .bindPopup('Arrivée')
+                                                //pousse le marker dans l'array
                                                 this.markers.push(marker)
+                                                // Adapter le zoom et centrer la carte pour afficher tout le trajet
+                                                // Calculer la latitude moyenne
                                                 let latMedium = (parseFloat(data[0].shape_pt_lat) + parseFloat(data[dataLenght-1].shape_pt_lat))/2
+                                                // Calculer la longitude moyenne
                                                 let longMedium = (parseFloat(data[0].shape_pt_lon) + parseFloat(data[dataLenght-1].shape_pt_lon))/2
                                                 //console.log('latitudeMedium', latMedium)
-                                             
+
+                                                // adapter la carte à  ces moyennes
                                                 this.map.flyTo([latMedium,longMedium],11)
+                                                // ajouter le trajet en rouge en utilisant tous les points de dataPositions
                                                 this.mapElms.polyLineRef = L.polyline(dataPositions,{color: 'red', weight: 13}
                                                 ).addTo(this.map)
 
@@ -209,10 +254,11 @@ class Geo {
                         
                     })
                 } else {
-                    //alert("Pas d'arrêt dans le coin !")
+                    //Si pas d'arrêt dans le coin, on affiche la boxe alerte
                     document.querySelector('.box-alert').classList.remove('hidden')
                 }
              })
+             //si error de communication avec l'API
              .catch(err => alert(err.message))
      }
 
@@ -221,6 +267,8 @@ class Geo {
         console.warn('ERROR(' + err.code + '): ' + err.message);
     } //end errorPosition
 
+    
+    // Méthode pour demander les autorisations de géolocalisation
     geoLoc = () => {
         navigator.permissions.query({name:'geolocation'})
               .then(result => {
