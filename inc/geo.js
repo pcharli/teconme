@@ -69,7 +69,7 @@ class Geo {
             console.log(result.state)
             if (result.state === 'granted') {
                 //Ajout d'une class sur le bouton "Me géolocaliser" si les droits sont OK
-                this.$geoSwitch.classList.add('hidden')
+                //this.$geoSwitch.classList.add('hidden')
                 this.geo = true
                 //createMap()
                 
@@ -82,6 +82,10 @@ class Geo {
                 }
                 position.coords.latitude = 50.05597490916252
                 position.coords.longitude = 4.491863482729571
+                /* null */
+                position.coords.latitude = 50.112673
+                position.coords.longitude = 4.418669
+                /* end null */
                 this.createMap(position)
             }
         })
@@ -93,7 +97,7 @@ class Geo {
         if(url.pathname != "/carte.html") {
             window.location.href = "carte.html"
         }
-        //si la carte paar défaut est affichée, la supprimer
+        //si la carte par défaut est affichée, la supprimer
         if (this.map) {
             this.map.remove()
         }
@@ -111,7 +115,7 @@ class Geo {
         var imageBel = "https://tile.openstreetmap.be/osmbe/{z}/{x}/{y}.png"
         var imageUrl3 = "https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=f5a6d9a8d3484637b41037978e6e1e7b"
         L.tileLayer(imageUrl3, {
-            attribution: 'Cepegra - 2024' //Auteur de la carte
+            attribution: 'Cepegra - 2025' //Auteur de la carte
         }).addTo(this.map)
         this.loadStops(position)
      }// end createMap
@@ -205,7 +209,8 @@ class Geo {
                         
                     })
                 } else {
-                    alert("Pas d'arrêt dans le coin !")
+                    //alert("Pas d'arrêt dans le coin !")
+                    document.querySelector('.box-alert').classList.remove('hidden')
                 }
              })
              .catch(err => alert(err.message))

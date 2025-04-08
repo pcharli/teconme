@@ -1,3 +1,4 @@
+//gestion de la carte
 import {Geo} from './inc/geo.js'
 
 
