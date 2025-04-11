@@ -2,8 +2,9 @@
 import {Geo} from './inc/geo.js'
 //Gestion du bouton d'installation
 import {Install} from './inc/install.js'
-//gestion des boxes
+//gestion des fermetures des boxes
 import boxClose from './inc/box.js'
+//lance le process d'installation de l'app
 Install()
 // end install
 
@@ -16,12 +17,13 @@ myGeo.init()
 
 
 
-     // Quand on clique sur le bouton "Me géolocaliser"
-     $geoSwitch.addEventListener('click', e => {
-        e.preventDefault()
-        alert('geo')
-        // On déclenche la méthode geoLoc
-        myGeo.init()
-    })
+// Quand on clique sur le bouton "Me géolocaliser" A FINIR
+$geoSwitch.addEventListener('click', e => {
+e.preventDefault()
+alert('geo')
+// On déclenche la méthode geoLoc
+myGeo.init()
+})
 
-    boxClose()
+// délenche la gestion de fermetures des boxes
+boxClose()

@@ -1,0 +1,78 @@
+/* CSS pour la carte */
+#map { 
+    height: 90vh;
+    border: 1px solid black;
+    transition: all 2s;
+ }
+.page {
+    font-family: "inter", sans-serif;
+}
+#map.hidde {
+    opacity: 0;
+    border: none;
+ }
+.leaflet-top {
+    bottom: 0 !important;
+}
+.leaflet-control-zoom, .leaflet-touch .leaflet-bar {
+    border: none;
+    position: absolute;
+    bottom: 2rem;
+    left: 1rem;
+}
+
+.leaflet-control-zoom a {
+    /* Component 12 */
+    margin-bottom: .5rem;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 6.652px !important;
+    color: rgba(51, 51, 51, 0.56);
+    box-shadow: 0px 14px 49px 0px #8B8CB269;
+    box-shadow: -6px -7px 23px 0px #F804043B;
+    box-shadow: 9px 4px 35px 0px #FFD60099;
+    backdrop-filter: blur(8px)
+}
+/* CSS pour les boxes */
+.box {
+    border: none;
+    padding: 1rem;
+    position: absolute;
+    width: 66%;
+    min-height: 5rem;
+    z-index: 1000;
+    background-color: white;
+    margin: 24% 0 0 13%;
+    border-radius: 16px;
+    box-shadow: 0px 14px 49px 0px #8B8CB269;
+    box-shadow: -6px -7px 23px 0px #F804043B;
+    box-shadow: 9px 4px 35px 0px #FFD60099;
+    backdrop-filter: blur(8px)
+
+}
+.close {
+    width: 1rem;
+    cursor: pointer;
+}
+.box-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* Bouton Install && géolocalisation */
+.install-btn, .geo-btn {
+    background-color: #FFD600;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 16px;
+    margin-top: 1rem;
+}
+/* CSS de classes **/
+.error {
+    color: red;
+}
+.hidden {
+    display: none;
+}

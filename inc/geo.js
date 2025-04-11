@@ -1,4 +1,56 @@
 //object général de la géolocalisation
+/*
+Objet Geo : 
+- constructor : 
+    - défini l'url de notre API
+    - défini toutes les propriétés
+    - défini les paramètres de localisation
+    - défini les icônes de la map
+- init() :
+    - initialisa la géolocalisation
+    - appelle la méthode createMap() ou errorPosition()
+    - si pas les droits, utilise des corrdonnées imposées et appelle createMap()
+- createMap() : 
+    - récupère la position issue de init()
+    - redirige l'user vers carte.html si besoin
+    - supprime une carte déjà mise en place
+    - retire la classe hidde à la div #map
+    - Ajoute la carte à la div #map, zoom 17
+    - Ajoute un marker avec la position de l'user
+    - Défini le layer de la carte
+    - Ajoute un copyright personalisé
+    - Appelle loadstops() pour affciher les arrêts de bus
+- loadstops() :
+    - recupère la position de l'user
+    - lance un request sur l'API des tecs en passant position de l'user et rayon de recherche en km
+    - récupère liste des arrêts de bus
+    - si arrêts, ajoute un marker par arrêt sur la carte
+    - ajoute un event click par marker
+        - lance request sur notre API avec l'ID de l'arrêt
+        - si "pas ok", ajoute le texte d'erreur de bus au marker
+        - si "ok" pour chaque bus, on ajoute un lien avec la route_id dans le marker
+    - ajoute les liens dans 1 tableau markersLinks (Array)
+    - pour chaque lien, add event click
+        - récupère l'id_shape du bus
+        - lance request sur notre api 
+            - récupérer les points de passage du bus dans dataLenght
+        - supprimer un trajet si il y en a un
+        - retire tous les markers éventuels sauf le user
+        - récupère le premier point pour créer un marker "Départ"
+        - récupère le dernier point pour créer un marker "Arrivée"
+        -  calcul long et lat moyenne de tous les points
+        - dezoome la map pour afficher tout le trajet
+        - crée une ligne avec tous les points sur la map
+    - si pas d'arrêts, affiche la box d'erreur
+-errorPosition() :
+    - affiche un message dans la console
+    - .....
+-geoLoc() :
+    - geolocalise l'user
+
+
+
+*/
 class Geo {
     constructor($mapBox, $geoSwitch) {
         //url api si dev ou prod
@@ -294,5 +346,5 @@ class Geo {
                 })
     }
 }
-
+//export de l'Object
 export {Geo}
