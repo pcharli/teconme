@@ -2,6 +2,7 @@
 const Install = () => {
     // sélection du bouton Install
     const installBtn = document.querySelector('.install-btn')
+    const installBox = document.querySelector('.box-install')
     // espace mémoire pour recevoir l'event install
     let deferredPrompt = null
     // avant l'affichage de la demande automatique
@@ -9,13 +10,13 @@ const Install = () => {
         e.preventDefault()
         deferredPrompt = e
         //afficher le bouton
-        installBtn.classList.remove('hidden')
+        installBox.classList.remove('hidden')
     })
     // click sur le bouton
     installBtn.addEventListener('click', e => {
         e.preventDefault()
         // masque le bouton
-        installBtn.classList.add('hidden')
+        installBox.classList.add('hidden')
         // affiche la demande d'install et stocke l'event en mémoire
         deferredPrompt.prompt()
     // test du choix de l'user    
